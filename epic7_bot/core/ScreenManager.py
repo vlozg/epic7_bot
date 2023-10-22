@@ -117,48 +117,56 @@ class ScreenManager(metaclass=Singleton):
         # position_x, position_y = self.MathUtils.midpoint(x1, y1, x2, y2)
         # self.click_position(position_x, position_y, waitTime=0)
 
-    def random_click_on_area_get_before_and_after_images_from_screen(self, x1, y1, x2, y2):
+    def random_click_on_area_get_before_and_after_images_from_screen(self, x1, y1, x2, y2, waitTime=3):
         beforeImage = self.take_screenshot()
         self.random_click_on_area(x1, y1, x2, y2)
-        self.sleep(3)
+        self.sleep(waitTime)
         afterImage = self.take_screenshot()
         return (beforeImage, afterImage)
 
-    def random_click_on_area_and_check_change_on_screen_retry(self, x1, y1, x2, y2, action=None, percentage=70):
-        self.sleep(1)
+    def random_click_on_area_and_check_change_on_screen_retry(self, x1, y1, x2, y2, action=None, percentage=65, *, premptive=True):
+        if premptive:
+            self.sleep(1)
+
         if action is not None:
             logging.info(f"{action}")
 
         beforeImage, afterImage = None, None
         count = 0
-        while self.check_if_images_changed(beforeImage, afterImage, percentage=percentage, action=action) is False and count < 2:
+        while self.check_if_images_changed(beforeImage, afterImage, percentage=percentage, action=action) is False and count < 3:
             beforeImage, afterImage = self.random_click_on_area_get_before_and_after_images_from_screen(
-                x1, y1, x2, y2)
+                x1, y1, x2, y2, waitTime=1.5)
             count += 1
-        if count < 2 == False:
+        if count == 3:
             logging.error(f"{action}")
+            return False
+        else:
+            return True
 
-        return count < 2
-
-    def random_click_on_area_get_before_and_after_images_from_area(self, x1, y1, x2, y2):
+    def random_click_on_area_get_before_and_after_images_from_area(self, x1, y1, x2, y2, waitTime=3):
         beforeImage = self.take_screnshot_from_area(x1, x2, y1, y2)
         self.random_click_on_area(x1, y1, x2, y2)
-        self.sleep(3)
+        self.sleep(waitTime)
         afterImage = self.take_screnshot_from_area(x1, x2, y1, y2)
         return (beforeImage, afterImage)
 
-    def random_click_on_area_and_check_change_on_area_retry(self, x1, y1, x2, y2, action=None, percentage=70):
-        self.sleep(1)
+    def random_click_on_area_and_check_change_on_area_retry(self, x1, y1, x2, y2, action=None, percentage=65, *, premptive=True):
+        if premptive:
+            self.sleep(1)
+
         if action is not None:
             logging.info(f"{action}")
 
-        beforeImage, afterImage = None, None
         count = 0
-        while self.check_if_images_changed(beforeImage, afterImage, percentage, action) is False and count < 2:
+        while self.check_if_images_changed(beforeImage, afterImage, percentage, action) is False and count < 3:
             beforeImage, afterImage = self.random_click_on_area_get_before_and_after_images_from_area(
-                x1, y1, x2, y2)
+                x1, y1, x2, y2, waitTime=1.5)
             count += 1
-        return count < 2
+        if count == 3:
+            logging.error(f"{action}")
+            return False
+        else:
+            return True
 
     def ensure_not_on_sleep_mode_on_lobby(self):
         logging.info(

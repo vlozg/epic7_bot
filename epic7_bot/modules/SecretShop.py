@@ -96,9 +96,9 @@ class SecretShop(Module):
 
     def refresh(self):
         self.ScreenManager.random_click_on_area_and_check_change_on_screen_retry(
-            x1=287, y1=808, x2=387, y2=838, action="Click on Refresh Button")
+            x1=287, y1=808, x2=387, y2=838, action="Click on Refresh Button", premptive=False)
         self.ScreenManager.random_click_on_area_and_check_change_on_screen_retry(
-            x1=878, y1=537, x2=986, y2=568, action="Click on Confirm Button")
+            x1=878, y1=537, x2=986, y2=568, action="Click on Confirm Button", premptive=False)
 
         self.refreshes_count += 1
 
