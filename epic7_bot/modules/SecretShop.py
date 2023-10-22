@@ -21,14 +21,14 @@ class SecretShop(Module):
         self.refreshes_count = 0
         self.covenant_count = 0
 
-    def check_bookmarks(self):
+    def check_bookmarks(self, mask=None):
         logging.info("Check Mystic and Covenant Bookmarks")
 
         [mystic_pos, coven_pos] = runInParallel(
             lambda: self.ScreenManager.match_template_on_screen(
-                self.SecretShopTemplates.mystic),
+                self.SecretShopTemplates.mystic, mask=mask, log=True),
             lambda: self.ScreenManager.match_template_on_screen(
-                self.SecretShopTemplates.covenant))
+                self.SecretShopTemplates.covenant, mask=mask, log=True))
 
         if mystic_pos is not None:
             logging.info("Found Mystic Bookmark")
@@ -92,7 +92,7 @@ class SecretShop(Module):
         self.check_bookmarks()
         self.scroll()
         self.ScreenManager.sleep(1)
-        self.check_bookmarks()
+        self.check_bookmarks(mask=self.SecretShopTemplates.mask4_6["image"])
 
     def refresh(self):
         self.ScreenManager.random_click_on_area_and_check_change_on_screen_retry(

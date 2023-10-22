@@ -26,3 +26,8 @@ class SecretShopTemplates(BaseTemplates):
             "image": cv2.imread(self.dirPath + '/../images/secret_shop/mystic.png', 0),
             "name": "mystic"
         }
+
+        self.mask4_6: Template = {
+            "image": cv2.imread(self.dirPath + '/../images/secret_shop/mask4_6.png', 0),
+            "name": "mask4_6"
+        }

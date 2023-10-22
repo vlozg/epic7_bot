@@ -55,8 +55,10 @@ class ScreenManager(metaclass=Singleton):
 
         return img
 
-    def match_template_on_screen(self, template: Template, percentage=0.7, *, log=False):
+    def match_template_on_screen(self, template: Template, percentage=0.7, *, mask=None, log=False):
         image = self.take_screenshot(log=log)
+        if mask is not None:
+            image = cv2.bitwise_and(image, image, mask=mask)
         match = cv2.matchTemplate(image, template['image'], cv2.TM_CCOEFF_NORMED)
         min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(match)
 
