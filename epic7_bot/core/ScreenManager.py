@@ -4,6 +4,7 @@ import logging
 import time
 import cv2
 import random
+import datetime
 
 from cv2 import Mat
 
@@ -35,6 +36,7 @@ class ScreenManager(metaclass=Singleton):
             matchTemplate.argmax(), matchTemplate.shape)[0]
         return position_x, position_y
 
+    def take_screenshot(self, log=False):
         png_screenshot_data = self.DeviceManager.device.screencap()
         # png_screenshot_data = self.DeviceManager.device.shell(
         #     "screencap -p | busybox base64")
@@ -42,6 +44,8 @@ class ScreenManager(metaclass=Singleton):
         nparr = np.frombuffer(png_screenshot_data, np.uint8)
         img = cv2.imdecode(nparr, 0)
         img = self.ScreenSizeFixer.reverse_img_norm(img)
+        if log:
+            cv2.imwrite(f".tmp/{datetime.datetime.now().strftime('%Y.%m.%d.%H%M%S')}.jpg", img)
         return img
 
     def take_screnshot_from_area(self, x1=None, x2=None, y1=None, y2=None):
@@ -51,10 +55,9 @@ class ScreenManager(metaclass=Singleton):
 
         return img
 
-    def match_template_on_screen(self, template: Template, percentage=0.6):
-        image = self.take_screenshot()
-        match = cv2.matchTemplate(
-            image, template['image'], cv2.TM_CCOEFF_NORMED)
+    def match_template_on_screen(self, template: Template, percentage=0.7, *, log=False):
+        image = self.take_screenshot(log=log)
+        match = cv2.matchTemplate(image, template['image'], cv2.TM_CCOEFF_NORMED)
         min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(match)
 
         logging.debug(

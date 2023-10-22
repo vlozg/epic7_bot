@@ -11,7 +11,7 @@ from epic7_bot.utils.Spinner import Spinner
 
 def get_log_level():
     LOG_LEVEL = os.getenv("LOG_LEVEL") if os.getenv(
-        "LOG_LEVEL") is not None else "INFO"
+        "LOG_LEVEL") is not None else "DEBUG"
     return LOG_LEVEL
 
 
