@@ -12,7 +12,8 @@ class DeviceManager(metaclass=Singleton):
 
     def setup_device(self):
         self.ensure_adb_is_running()
-        self.connect_devices_to_adb()
+	    # We aren't using emulator
+        # self.connect_devices_to_adb()
 
         client = Client(host="127.0.0.1", port=5037)
         devices = client.devices()
