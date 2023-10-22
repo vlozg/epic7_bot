@@ -12,12 +12,14 @@ from epic7_bot.core.DeviceManager import DeviceManager
 from epic7_bot.core.MathUtils import MathUtils
 from epic7_bot.templates.Template import Template
 from epic7_bot.utils.Singleton import Singleton
+from epic7_bot.utils.fix_screen_size import ScreenSizeFixedFixer
 
 
 class ScreenManager(metaclass=Singleton):
     def __init__(self, fastMode=False):
         self.MathUtils = MathUtils()
         self.DeviceManager = DeviceManager()
+        self.ScreenSizeFixer = ScreenSizeFixedFixer(1600, 900, 53, 30, 1546, 869)
         self.fastMode = fastMode
 
     def sleep(self, waitTime):
@@ -39,6 +41,7 @@ class ScreenManager(metaclass=Singleton):
         # png_screenshot_data = base64.b64decode(png_screenshot_data)
         nparr = np.frombuffer(png_screenshot_data, np.uint8)
         img = cv2.imdecode(nparr, 0)
+        img = self.ScreenSizeFixer.reverse_img_norm(img)
         return img
 
     def take_screnshot_from_area(self, x1=None, x2=None, y1=None, y2=None):
@@ -79,7 +82,9 @@ class ScreenManager(metaclass=Singleton):
         match = self.match_template_on_screen(template)
         if match is not None:
             position_x, position_y = self.get_position_of_template_match(match)
-            x, y = self.MathUtils.randomPoint(position_x, position_y)
+            x, y = self.ScreenSizeFixer.norm(
+                *self.MathUtils.randomPoint(position_x, position_y)
+            )
             self.DeviceManager.device.shell("input tap " +
                                             str(x) + " " + str(y))
 
@@ -95,7 +100,9 @@ class ScreenManager(metaclass=Singleton):
 
     def click_position(self, position_x, position_y, waitTime, message=None):
         self.sleep(waitTime)
-        x, y = self.MathUtils.randomPoint(position_x, position_y)
+        x, y = self.ScreenSizeFixer.norm(
+            *self.MathUtils.randomPoint(position_x, position_y)
+        )
         self.DeviceManager.device.shell("input tap " + str(x) + " " + str(y))
 
     def random_click_on_area(self, x1, y1, x2, y2):

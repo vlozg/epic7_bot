@@ -3,6 +3,7 @@ import time
 from epic7_bot.core.DeviceManager import DeviceManager
 from epic7_bot.modules.Module import Module
 from epic7_bot.templates.CommonTemplates import CommonTemplates
+from epic7_bot.utils.fix_screen_size import ScreenSizeFixedFixer
 
 
 class Arena(Module):
@@ -10,6 +11,7 @@ class Arena(Module):
         super(self.__class__, self).__init__()
         self.DeviceManager = DeviceManager()
         self.CommonTemplates = CommonTemplates()
+        self.ScreenSizeFixer = ScreenSizeFixedFixer(1600, 900, 53, 30, 1546, 869)
 
     def battle_rotation(self):
         logging.info(f"Started battle rotation")
@@ -45,8 +47,10 @@ class Arena(Module):
             self.battle_rotation()
 
     def scroll(self):
+        x1, y1 = self.ScreenSizeFixer.norm(1200, 700)
+        x2, y2 = self.ScreenSizeFixer.norm(1200, 400)
         self.DeviceManager.device.shell(
-            "input touchscreen swipe 1200 700 1200 400 200")
+            f"input touchscreen swipe {x1} {y1} {x2} {y2} 200")
 
     def scroll_and_do_battle_rotation(self, x1, y1, x2, y2, action):
         self.scroll()

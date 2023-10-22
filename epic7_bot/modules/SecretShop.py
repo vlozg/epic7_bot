@@ -6,6 +6,7 @@ from epic7_bot.core.DeviceManager import DeviceManager
 from epic7_bot.core.MathUtils import MathUtils
 from epic7_bot.modules.Module import Module
 from epic7_bot.templates.SecretShopTemplates import SecretShopTemplates
+from epic7_bot.utils.fix_screen_size import ScreenSizeFixedFixer
 
 
 class SecretShop(Module):
@@ -14,6 +15,7 @@ class SecretShop(Module):
         self.DeviceManager = DeviceManager()
         self.SecretShopTemplates = SecretShopTemplates()
         self.MathUtils = MathUtils()
+        self.ScreenSizeFixer = ScreenSizeFixedFixer(1600, 900, 53, 30, 1546, 869)
 
         self.mystic_count = 0
         self.refreshes_count = 0
@@ -72,10 +74,16 @@ class SecretShop(Module):
         
 
     def scroll(self):
-        x1, y1 = self.MathUtils.random_point_in_area(
-            x1=750, y1=781, x2=1282, y2=845)
-        x2, y2 = self.MathUtils.random_point_in_area(
-            x1=701, y1=98, x2=1288, y2=174)
+        x1, y1 = self.ScreenSizeFixer.norm(
+            *self.MathUtils.random_point_in_area(
+                x1=750, y1=781, x2=1282, y2=845
+            )
+        )
+        x2, y2 = self.ScreenSizeFixer.norm(
+            *self.MathUtils.random_point_in_area(
+                x1=701, y1=98, x2=1288, y2=174
+            )
+        )
 
         self.DeviceManager.device.shell(
             f"input touchscreen swipe {x1} {y1} {x2} {y2} 400")
