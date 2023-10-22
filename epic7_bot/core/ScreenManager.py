@@ -33,10 +33,10 @@ class ScreenManager(metaclass=Singleton):
             matchTemplate.argmax(), matchTemplate.shape)[0]
         return position_x, position_y
 
-    def take_screenshot(self):
-        png_screenshot_data = self.DeviceManager.device.shell(
-            "screencap -p | busybox base64")
-        png_screenshot_data = base64.b64decode(png_screenshot_data)
+        png_screenshot_data = self.DeviceManager.device.screencap()
+        # png_screenshot_data = self.DeviceManager.device.shell(
+        #     "screencap -p | busybox base64")
+        # png_screenshot_data = base64.b64decode(png_screenshot_data)
         nparr = np.frombuffer(png_screenshot_data, np.uint8)
         img = cv2.imdecode(nparr, 0)
         return img

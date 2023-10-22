@@ -41,9 +41,10 @@ class TestScreen:
                     f"x1={self.coords[0]}, y1={self.coords[1]}, x2={self.coords[2]}, y2={self.coords[3]}")
 
     def take_screnshot(self):
-        png_screenshot_data = self.DeviceManager.device.shell(
-            "screencap -p | busybox base64")
-        png_screenshot_data = base64.b64decode(png_screenshot_data)
+        png_screenshot_data = self.DeviceManager.device.screencap()
+        # png_screenshot_data = self.DeviceManager.device.shell(
+        #     "screencap -p | busybox base64")
+        # png_screenshot_data = base64.b64decode(png_screenshot_data)
         with open(self.filename, "wb") as fp:
             fp.write(png_screenshot_data)
 
